@@ -1,0 +1,73 @@
+upgrades:
+  20:
+    levels:
+      1: 25
+      2: 50
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3953
+      type: NETHER_STAR
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: Апскеил
+        lore:
+          - Увеличивает шанс выпадения драгоценной руды
+
+  22:
+    speedSpawn:
+      1: 20
+      2: 10
+      3: 5
+    levels:
+      1: 25
+      2: 50
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3953
+      type: WIND_CHARGE
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: Рекомбинация
+        lore:
+          - Ускоряет генерацию
+
+  24:
+    levels:
+      1: 25
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3953
+      type: GOLD_INGOT
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: Переплавка
+        lore:
+          - Руды выпадают сразу переплавленными
+
+ores:
+  DIAMOND_ORE:
+    ==: ru.ruha42.generatedblocks.data.OreData
+    levels:
+      1: 0.05
+      2: 0.94
+
+  IRON_ORE:
+    ==: ru.ruha42.generatedblocks.data.OreData
+    levels:
+      1: 0.30
+      2: 0.54
+
+  GOLD_ORE:
+    ==: ru.ruha42.generatedblocks.data.OreData
+    levels:
+      1: 0.20
+      2: 0.24
+
+  REDSTONE_ORE:
+    ==: ru.ruha42.generatedblocks.data.OreData
+    levels:
+      1: 0.10
+      2: 0.24

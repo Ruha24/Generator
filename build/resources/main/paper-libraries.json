@@ -1,0 +1,1 @@
+{"repositories":{"MavenRepo":"https://repo.maven.apache.org/maven2/","papermc-repo":"https://repo.papermc.io/repository/maven-public/","sonatype":"https://oss.sonatype.org/content/groups/public/","maven":"https://repo.xenondevs.xyz/releases","maven2":"https://jitpack.io"},"dependencies":["xyz.xenondevs.invui:invui:1.37","org.spongepowered:configurate-yaml:4.0.0"]}

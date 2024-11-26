@@ -1,0 +1,11 @@
+api-version: "1.21"
+name: Generated
+version: "1.0"
+main: ru.ruha42.generatedblocks.Main
+loader: ru.ruha42.generatedblocks.ClassLoader
+dependencies:
+  server:
+    Vault:
+      load: BEFORE
+      required: true
+      join-classpath: true
