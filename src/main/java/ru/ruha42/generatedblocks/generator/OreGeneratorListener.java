@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -38,7 +39,9 @@ public class OreGeneratorListener implements Listener {
 
     public static Map<OreGenerator, Long> oreDataSpeedGeneration = new HashMap<>();
 
-    public static final Material mainBlock = Material.COMMAND_BLOCK;
+    public static final Material mainBlock = loadMaterial("settings.generator-block", Material.COMMAND_BLOCK);
+
+    private static final Sound generationSound = loadSound("settings.generation-sound", Sound.BLOCK_LAVA_EXTINGUISH);
 
     private final MenuUpgrade menu = new MenuUpgrade();
 
@@ -86,7 +89,9 @@ public class OreGeneratorListener implements Listener {
 
         var itemInHand = event.getPlayer().getInventory().getItemInMainHand();
 
-        if (block != null && itemInHand.getType() == mainBlock) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK
+                && event.getHand() == EquipmentSlot.HAND
+                && block != null && itemInHand.getType() == mainBlock) {
             var blockUp = block.getLocation().getBlock().getRelative(BlockFace.UP);
 
             blockUp.setType(mainBlock);
@@ -119,7 +124,7 @@ public class OreGeneratorListener implements Listener {
 
             Player player = event.getPlayer();
 
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getHand() == EquipmentSlot.HAND) {
                 OreGenerator oreGenerator = oreGeneratorMap.get(block.getLocation());
 
                 if (oreGenerator != null) {
@@ -155,13 +160,13 @@ public class OreGeneratorListener implements Listener {
             Block underBlock = block.getRelative(0, -1, 0);
 
             if (underBlock.isEmpty()) {
-                Material newOre = getRandomOre(oreGenerator.getLevel(24));
+                Material newOre = getRandomOre(oreGenerator.getLevel(20));
 
                 if (!oreGenerator.getMaterialBlocks().contains(newOre))
                     underBlock.setType(newOre, false);
 
                 if (oreGenerator.getLevel(44) == 1)
-                    block.getWorld().playSound(block.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 1, 2);
+                    block.getWorld().playSound(block.getLocation(), generationSound, 1, 2);
 
                 block.getWorld().spawnParticle(Particle.BLOCK, block.getLocation(), 10, newOre.createBlockData());
             }
@@ -192,6 +197,28 @@ public class OreGeneratorListener implements Listener {
         }
 
         return Material.STONE;
+    }
+
+    private static Material loadMaterial(String path, Material fallback) {
+        String name = Main.main.getConfig().getString(path, fallback.name());
+
+        try {
+            return Material.valueOf(name);
+        } catch (IllegalArgumentException e) {
+            Main.main.getLogger().warning("config.yml: invalid material '" + name + "' at '" + path + "', using " + fallback.name());
+            return fallback;
+        }
+    }
+
+    private static Sound loadSound(String path, Sound fallback) {
+        String name = Main.main.getConfig().getString(path, fallback.name());
+
+        try {
+            return Sound.valueOf(name);
+        } catch (IllegalArgumentException e) {
+            Main.main.getLogger().warning("config.yml: invalid sound '" + name + "' at '" + path + "', using " + fallback.name());
+            return fallback;
+        }
     }
 
     public static void removeOreGenerator(Location loc) {

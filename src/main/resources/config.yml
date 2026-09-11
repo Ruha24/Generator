@@ -1,20 +1,29 @@
+settings:
+  generator-block: COMMAND_BLOCK
+  # Проигрывается только если звук включён на конкретном генераторе (слот 44 в меню)
+  generation-sound: BLOCK_LAVA_EXTINGUISH
+  # Поддерживает & и hex-цвета &#RRGGBB
+  menu-title: "&e⛏ &#FF9100&lШахтёр"
+
+# Ключ секции апгрейда — номер слота в меню (20, 22, 24).
+# Максимальный уровень апгрейда = наибольший уровень в 'levels' + 1,
+# так что для нового уровня 3 достаточно добавить "3: <цена>" в levels
+# (а для слота 20 — ещё и "3: <шанс>" в шансы руд ниже, иначе выше 2
+# уровня будет использоваться шанс последнего заданного уровня).
 upgrades:
   20:
+    material: NETHER_STAR
+    name: Апскеил
+    lore:
+      - Увеличивает шанс выпадения драгоценной руды
     levels:
       1: 25
-      2: 50
-    item:
-      ==: org.bukkit.inventory.ItemStack
-      v: 3953
-      type: NETHER_STAR
-      meta:
-        ==: ItemMeta
-        meta-type: UNSPECIFIC
-        display-name: Апскеил
-        lore:
-          - Увеличивает шанс выпадения драгоценной руды
 
   22:
+    material: WIND_CHARGE
+    name: Рекомбинация
+    lore:
+      - Ускоряет генерацию
     speedSpawn:
       1: 20
       2: 10
@@ -22,52 +31,35 @@ upgrades:
     levels:
       1: 25
       2: 50
-    item:
-      ==: org.bukkit.inventory.ItemStack
-      v: 3953
-      type: WIND_CHARGE
-      meta:
-        ==: ItemMeta
-        meta-type: UNSPECIFIC
-        display-name: Рекомбинация
-        lore:
-          - Ускоряет генерацию
 
   24:
+    material: GOLD_INGOT
+    name: Переплавка
+    lore:
+      - Руды выпадают сразу переплавленными
     levels:
       1: 25
-    item:
-      ==: org.bukkit.inventory.ItemStack
-      v: 3953
-      type: GOLD_INGOT
-      meta:
-        ==: ItemMeta
-        meta-type: UNSPECIFIC
-        display-name: Переплавка
-        lore:
-          - Руды выпадают сразу переплавленными
 
+# Шанс руды по уровню апгрейда "Апскеил" (слот 20).
+# Если для текущего уровня апгрейда шанс не задан — используется
+# шанс наибольшего заданного уровня.
 ores:
   DIAMOND_ORE:
-    ==: ru.ruha42.generatedblocks.data.OreData
     levels:
       1: 0.05
       2: 0.94
 
   IRON_ORE:
-    ==: ru.ruha42.generatedblocks.data.OreData
     levels:
       1: 0.30
       2: 0.54
 
   GOLD_ORE:
-    ==: ru.ruha42.generatedblocks.data.OreData
     levels:
       1: 0.20
       2: 0.24
 
   REDSTONE_ORE:
-    ==: ru.ruha42.generatedblocks.data.OreData
     levels:
       1: 0.10
       2: 0.24

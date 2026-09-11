@@ -5,12 +5,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.ruha42.generatedblocks.data.ConfigData;
-import ru.ruha42.generatedblocks.data.OreData;
 import ru.ruha42.generatedblocks.generator.OreGenerator;
 import ru.ruha42.generatedblocks.generator.OreGeneratorListener;
 import ru.ruha42.generatedblocks.menu.MenuFilterListener;
@@ -32,9 +30,14 @@ public final class Main extends JavaPlugin {
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 
+        if (rsp == null) {
+            getLogger().severe("Vault economy provider not found. Disabling plugin.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         economy = rsp.getProvider();
 
-        ConfigurationSerialization.registerClass(OreData.class);
         saveDefaultConfig();
 
         List<Upgrade> upgrades = ConfigData.getUpgrades();
@@ -47,9 +50,23 @@ public final class Main extends JavaPlugin {
                     .filter(namespacedKey ->  namespacedKey.getNamespace().equals("ruha42"))
                     .forEach(namespacedKey -> {
                         String[] locationData = namespacedKey.getKey().split("_");
-                        int x = Integer.parseInt(locationData[1]);
-                        int y = Integer.parseInt(locationData[2]);
-                        int z = Integer.parseInt(locationData[3]);
+
+                        if (locationData.length != 4) {
+                            getLogger().warning("Skipping malformed generator key: " + namespacedKey.getKey());
+                            return;
+                        }
+
+                        int x, y, z;
+
+                        try {
+                            x = Integer.parseInt(locationData[1]);
+                            y = Integer.parseInt(locationData[2]);
+                            z = Integer.parseInt(locationData[3]);
+                        } catch (NumberFormatException e) {
+                            getLogger().warning("Skipping malformed generator key: " + namespacedKey.getKey());
+                            return;
+                        }
+
                         Location loc = new Location(world, x, y, z);
                         Block block = loc.getBlock();
                         String key = persist.get(new NamespacedKey("ruha42_filter", "block_%d_%d_%d_filter".formatted(block.getX(), block.getY(), block.getZ())), PersistentDataType.STRING);

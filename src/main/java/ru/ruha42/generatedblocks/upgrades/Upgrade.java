@@ -2,8 +2,8 @@ package ru.ruha42.generatedblocks.upgrades;
 
 import lombok.Getter;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -16,16 +16,13 @@ public class Upgrade {
     private Map<Integer, Integer> levels;
     private Map<Integer, Integer> speedOre;
 
-    public Upgrade(int slot, ItemStack item, Map<Integer, Integer> levels, Map<Integer, Integer> speedOre) {
-        material = item.getType();
+    public Upgrade(int slot, Material material, String name, List<String> lore, Map<Integer, Integer> levels, Map<Integer, Integer> speedOre) {
         this.slot = slot;
+        this.material = material;
+        this.name = name;
         this.levels = levels;
         this.speedOre = speedOre;
-
-        var meta = item.getItemMeta();
-
-        name = meta.getDisplayName();
-        this.lore = meta.hasLore() ? String.join(", ", meta.getLore()) : "Описание отсутствует";
+        this.lore = (lore == null || lore.isEmpty()) ? "Описание отсутствует" : String.join(", ", lore);
     }
 
     public int getPrice(int level) {
@@ -39,6 +36,10 @@ public class Upgrade {
         int maxLevel = levels.keySet().stream().max(Integer::compare).orElse(1);
 
         return levels.getOrDefault(maxLevel, 1);
+    }
+
+    public int getMaxLevel() {
+        return levels.keySet().stream().max(Integer::compare).orElse(1) + 1;
     }
 
     public int getSpeedOre(int level) {

@@ -62,7 +62,7 @@ public class MenuUpgrade {
                                         : upgrade.getName() + " " + currentLevel)
                                 .addLoreLines(upgrade.getLore()),
                         click -> {
-                            addLevel(click.getPlayer(), slot, currentLevel, oreGenerator, upgrade.getPrice(currentLevel));
+                            addLevel(click.getPlayer(), slot, currentLevel, oreGenerator, upgrade.getPrice(currentLevel), upgrade.getMaxLevel());
 
                             if(slot == 22 && upgrade.getSpeedOre() != null) {
                                 oreGenerator.setSpeed(upgrade.getSpeedOre(oreGenerator.getLevel(22)));
@@ -78,15 +78,17 @@ public class MenuUpgrade {
 
         SimpleItem onSound = new SimpleItem(new ItemBuilder(Material.BARRIER)
                 .setDisplayName(sound == 1 ? "Звук включён" : "Звук выключен"), click -> {
-                addLevel(click.getPlayer(), 44, sound, oreGenerator, 0);
+                addLevel(click.getPlayer(), 44, sound, oreGenerator, 0, 2);
                 showMenu(player, oreGenerator);
         }  );
 
         gui.setItem(44, onSound);
 
+        String title = Main.main.getConfig().getString("settings.menu-title", "&e⛏ &#FF9100&lШахтёр");
+
         windowBuilder = Window.single()
                 .setGui(gui)
-                .setTitle("&e⛏ &#FF9100&lШахтёр");
+                .setTitle(title);
 
         windowBuilder.open(player);
     }
@@ -119,25 +121,14 @@ public class MenuUpgrade {
         menuFilter.openFilterMenu(player, oreGenerator);
     }
 
-    private void addLevel(Player player, int slot, int level, OreGenerator oreGenerator, int price) {
+    private void addLevel(Player player, int slot, int level, OreGenerator oreGenerator, int price, int maxLevel) {
         int newLevel = level + 1;
 
         switch (slot) {
             case 20:
             case 22:
-                if (level >= 5) {
-                    player.sendMessage("Это улучшение максимального уровня");
-                    return;
-                }
-                if (!buyUpgrade(player, price)) {
-                    return;
-                }
-
-                player.sendMessage("Вы успешно улучшили уровень до " + newLevel);
-                break;
-
             case 24:
-                if (level >= 2) {
+                if (level >= maxLevel) {
                     player.sendMessage("Это улучшение максимального уровня");
                     return;
                 }
